@@ -11,10 +11,27 @@ class Product extends Model
 {
     protected $fillable = [
         'name',
-        'description',
+        'brand',
+        'manufacturer',
         'price',
+        'discount',
         'stock',
-        'category_id'
+        'category_id',
+        'availability',
+        'isNew',
+        'requiresPrescription',
+        'dosageForm',
+        'strength',
+        'ingredients',
+        'usage',
+        'expiryDate',
+        'sideEffects',
+        'warning',
+        'storage',
+        'barcode',
+        'batch_number',
+        'description',
+        'image'
     ];
 
     protected $casts = [

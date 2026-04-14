@@ -1,0 +1,136 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+class ProductController extends Controller
+{
+    public function index()
+    {
+        $products = Product::with('category')->latest()->get();
+        return view('admin.products.index', compact('products'));
+    }
+
+    public function create()
+    {
+        $categories = Category::all();
+        return view('admin.products.create', compact('categories'));
+    }
+
+    public function store(Request $request)
+    {
+        // ✅ Validation
+        $data = $request->validate([
+            'name' => 'required|string',
+            'price' => 'required|numeric',
+            'stock' => 'nullable|integer',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image',
+
+            // optional fields
+            'brand' => 'nullable|string',
+            'manufacturer' => 'nullable|string',
+            'discount' => 'nullable|numeric',
+            'availability' => 'nullable|string',
+            'dosageForm' => 'nullable|string',
+            'strength' => 'nullable|string',
+            'ingredients' => 'nullable|string',
+            'usage' => 'nullable|string',
+            'expiryDate' => 'nullable|date',
+            'sideEffects' => 'nullable|string',
+            'warning' => 'nullable|string',
+            'storage' => 'nullable|string',
+            'barcode' => 'nullable|string',
+            'batch_number' => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+        // ✅ Fix checkboxes
+        $data['isNew'] = $request->has('isNew');
+        $data['requiresPrescription'] = $request->has('requiresPrescription');
+
+        // ✅ Image upload
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('products', 'public');
+        }
+
+        Product::create($data);
+
+        return redirect()->route('admin.products.index');
+    }
+
+    public function edit($id)
+    {
+        $product = Product::findOrFail($id);
+        $categories = Category::all();
+
+        return view('admin.products.edit', compact('product', 'categories'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        // ✅ Validation
+        $data = $request->validate([
+            'name' => 'required|string',
+            'price' => 'required|numeric',
+            'stock' => 'nullable|integer',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image',
+
+            // optional fields
+            'brand' => 'nullable|string',
+            'manufacturer' => 'nullable|string',
+            'discount' => 'nullable|numeric',
+            'availability' => 'nullable|string',
+            'dosageForm' => 'nullable|string',
+            'strength' => 'nullable|string',
+            'ingredients' => 'nullable|string',
+            'usage' => 'nullable|string',
+            'expiryDate' => 'nullable|date',
+            'sideEffects' => 'nullable|string',
+            'warning' => 'nullable|string',
+            'storage' => 'nullable|string',
+            'barcode' => 'nullable|string',
+            'batch_number' => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+        // ✅ Fix checkboxes
+        $data['isNew'] = $request->has('isNew');
+        $data['requiresPrescription'] = $request->has('requiresPrescription');
+
+        // ✅ Image update
+        if ($request->hasFile('image')) {
+
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $data['image'] = $request->file('image')->store('products', 'public');
+        }
+
+        $product->update($data);
+
+        return redirect()->route('admin.products.index');
+    }
+
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
+        }
+
+        $product->delete();
+
+        return back();
+    }
+}

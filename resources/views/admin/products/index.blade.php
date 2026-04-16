@@ -47,77 +47,92 @@
                     <tbody class="divide-y">
 
                         @forelse($products as $product)
-                            <tr class="hover:bg-gray-50 transition">
+                            {{-- Replace your card grid section with this --}}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                @forelse($products as $product)
+                                    <div
+                                        class="bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200">
 
-                                {{-- ID --}}
-                                <td class="px-4 py-3">
-                                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">
-                                        #{{ str_pad($product->id, 5, '0', STR_PAD_LEFT) }}
-                                    </span>
-                                </td>
-
-                                {{-- PRODUCT --}}
-                                <td class="px-4 py-3">
-                                    <div class="flex items-center gap-3">
-
-                                        @if ($product->image)
-                                            <img src="{{ asset('storage/' . $product->image) }}"
-                                                class="w-10 h-10 rounded-full object-cover">
-                                        @else
-                                            <div
-                                                class="w-10 h-10 flex items-center justify-center rounded-full bg-indigo-500 text-white font-bold">
-                                                {{ strtoupper(substr($product->name, 0, 1)) }}
-                                            </div>
-                                        @endif
-
-                                        <span class="font-semibold text-gray-800">
-                                            {{ $product->name }}
-                                        </span>
-                                    </div>
-                                </td>
-
-                                {{-- PRICE --}}
-                                <td class="px-4 py-3 font-semibold text-blue-600">
-                                    {{ $product->price }} DT
-                                </td>
-
-                                {{-- STOCK --}}
-                                <td class="px-4 py-3">
-                                    @if ($product->stock > 0)
-                                        <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
-                                            En stock ({{ $product->stock }})
-                                        </span>
-                                    @else
-                                        <span class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-600">
-                                            Rupture
-                                        </span>
-                                    @endif
-                                </td>
-
-                                {{-- ACTIONS --}}
-                                <td class="px-4 py-3">
-                                    <div class="flex justify-center gap-2">
-
-                                        <a href="{{ route('admin.products.edit', $product->id) }}"
-                                            class="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded hover:bg-blue-600 hover:text-white transition">
-                                            ✏️
-                                        </a>
-
-                                        <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
-                                            onsubmit="return confirm('Supprimer ce produit ?');">
-                                            @csrf
-                                            @method('DELETE')
-
+                                        {{-- Image zone --}}
+                                        <div class="relative bg-gray-50 flex items-center justify-center h-40 p-4">
+                                            @if ($product->discount > 0)
+                                                <span
+                                                    class="absolute top-2 left-2 bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded-lg">
+                                                    -{{ $product->discount }}%
+                                                </span>
+                                            @endif
+                                            @if ($product->isNew)
+                                                <span
+                                                    class="absolute top-2 right-9 bg-teal-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
+                                                    Nouveau
+                                                </span>
+                                            @endif
                                             <button
-                                                class="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-600 hover:text-white transition">
-                                                🗑
-                                            </button>
-                                        </form>
+                                                class="absolute top-2 right-2 w-7 h-7 bg-white border border-gray-200 rounded-full flex items-center justify-center text-pink-500 hover:bg-pink-50 transition">♡</button>
 
+                                            @if ($product->image)
+                                                <img src="{{ asset('storage/' . $product->image) }}"
+                                                    class="max-h-28 max-w-full object-contain">
+                                            @else
+                                                <div
+                                                    class="w-16 h-16 rounded-full bg-teal-500 text-white font-bold text-2xl flex items-center justify-center">
+                                                    {{ strtoupper(substr($product->name, 0, 2)) }}
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        {{-- Body --}}
+                                        <div class="p-3 flex flex-col gap-1 flex-1">
+                                            <span
+                                                class="text-xs bg-gray-100 text-gray-400 rounded px-1.5 py-0.5 self-start">#{{ str_pad($product->id, 5, '0', STR_PAD_LEFT) }}</span>
+                                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                                                {{ $product->brand }}</p>
+                                            <p class="text-sm font-extrabold text-gray-800 leading-tight">
+                                                {{ $product->name }}</p>
+                                            <div class="flex items-baseline gap-2 mt-1">
+                                                @if ($product->price_old)
+                                                    <span
+                                                        class="text-xs text-gray-400 line-through">{{ $product->price_old }}
+                                                        TND</span>
+                                                @endif
+                                                <span class="text-base font-extrabold text-teal-700">{{ $product->price }}
+                                                    TND</span>
+                                            </div>
+                                            <div class="flex items-center justify-between mt-1">
+                                                @if ($product->stock > 0)
+                                                    <span
+                                                        class="text-xs font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">En
+                                                        stock ({{ $product->stock }})</span>
+                                                @else
+                                                    <span
+                                                        class="text-xs font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded-full">Rupture</span>
+                                                @endif
+                                                @if ($product->requiresPrescription)
+                                                    <span
+                                                        class="text-xs font-bold bg-amber-50 text-amber-600 px-2 py-0.5 rounded">Rx</span>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        {{-- Actions --}}
+                                        <div class="flex gap-2 p-3 border-t border-gray-50">
+                                            <a href="{{ route('admin.products.show', $product->id) }}"
+                                                class="flex-1 text-center text-xs font-bold bg-teal-50 text-teal-700 hover:bg-teal-500 hover:text-white py-2 rounded-lg transition">👁
+                                                Voir</a>
+                                            <a href="{{ route('admin.products.edit', $product->id) }}"
+                                                class="text-xs bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-lg transition">✏️</a>
+                                            <form action="{{ route('admin.products.destroy', $product->id) }}"
+                                                method="POST" onsubmit="return confirm('Supprimer ce produit ?')">
+                                                @csrf @method('DELETE')
+                                                <button
+                                                    class="text-xs bg-red-50 text-red-500 hover:bg-red-500 hover:text-white px-3 py-2 rounded-lg transition">🗑</button>
+                                            </form>
+                                        </div>
                                     </div>
-                                </td>
-
-                            </tr>
+                                @empty
+                                    <div class="col-span-full text-center py-16 text-gray-400">Aucun produit trouvé</div>
+                                @endforelse
+                            </div>
 
                         @empty
                             <tr>

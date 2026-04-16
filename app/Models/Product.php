@@ -12,7 +12,6 @@ class Product extends Model
     protected $fillable = [
         'name',
         'brand',
-        'manufacturer',
         'price',
         'discount',
         'stock',
@@ -20,16 +19,6 @@ class Product extends Model
         'availability',
         'isNew',
         'requiresPrescription',
-        'dosageForm',
-        'strength',
-        'ingredients',
-        'usage',
-        'expiryDate',
-        'sideEffects',
-        'warning',
-        'storage',
-        'barcode',
-        'batch_number',
         'description',
         'image'
     ];

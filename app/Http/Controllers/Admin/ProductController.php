@@ -34,19 +34,8 @@ class ProductController extends Controller
 
             // optional fields
             'brand' => 'nullable|string',
-            'manufacturer' => 'nullable|string',
             'discount' => 'nullable|numeric',
             'availability' => 'nullable|string',
-            'dosageForm' => 'nullable|string',
-            'strength' => 'nullable|string',
-            'ingredients' => 'nullable|string',
-            'usage' => 'nullable|string',
-            'expiryDate' => 'nullable|date',
-            'sideEffects' => 'nullable|string',
-            'warning' => 'nullable|string',
-            'storage' => 'nullable|string',
-            'barcode' => 'nullable|string',
-            'batch_number' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 
@@ -86,19 +75,8 @@ class ProductController extends Controller
 
             // optional fields
             'brand' => 'nullable|string',
-            'manufacturer' => 'nullable|string',
             'discount' => 'nullable|numeric',
             'availability' => 'nullable|string',
-            'dosageForm' => 'nullable|string',
-            'strength' => 'nullable|string',
-            'ingredients' => 'nullable|string',
-            'usage' => 'nullable|string',
-            'expiryDate' => 'nullable|date',
-            'sideEffects' => 'nullable|string',
-            'warning' => 'nullable|string',
-            'storage' => 'nullable|string',
-            'barcode' => 'nullable|string',
-            'batch_number' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 

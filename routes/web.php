@@ -4,10 +4,12 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PrescriptionController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\OrderController as ApiOrderController;
 use App\Http\Controllers\Api\PrescriptionController as ApiPrescriptionController;
 use App\Http\Controllers\Api\ProductController as ApiProductController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,8 +28,10 @@ Route::prefix('admin')->group(function () {
     Route::get('orders/{id}', [OrderController::class, 'show'])->name('admin.orders.show');
     Route::get('orders/{id}/{status}', [OrderController::class, 'updateStatus']);
 
-    Route::get('prescriptions', [PrescriptionController::class, 'index']);
+    Route::get('prescriptions', [PrescriptionController::class, 'index'])->name('admin.prescriptions');
     Route::get('prescriptions/{id}/{status}', [PrescriptionController::class, 'updateStatus']);
+    Route::resource('users', UserController::class)->names('admin.users');
+    
 });
 
 

@@ -4,26 +4,75 @@
 <head>
     <title>Farmaconnect Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
 </head>
 
-<body class="flex">
+<body class="bg-gray-100">
 
-    <!-- Sidebar -->
-    <div class="w-64 bg-gray-800 text-white min-h-screen p-5">
-        <h2 class="text-xl font-bold mb-6">Admin</h2>
+    <div class="flex">
 
-        <ul>
-            <li><a href="/admin" class="block py-2">Dashboard</a></li>
-            <li><a href="/admin/products" class="block py-2">Products</a></li>
-            <li><a href="/admin/orders" class="block py-2">Orders</a></li>
-            <li><a href="/admin/prescriptions" class="block py-2">Prescriptions</a></li>
-        </ul>
+        {{-- SIDEBAR --}}
+        @include('admin.components.sidebar')
+
+        {{-- MAIN --}}
+        <div id="mainContent" class="flex-1 min-h-screen transition-all duration-300 ml-0 md:ml-64">
+
+            <div class="p-4">
+
+                {{-- HEADER --}}
+                @include('admin.components.header')
+
+                {{-- PAGE CONTENT --}}
+                @yield('content')
+
+            </div>
+        </div>
+
     </div>
 
-    <!-- Content -->
-    <div class="flex-1 p-6">
-        @yield('content')
-    </div>
+    {{-- GLOBAL SCRIPT --}}
+    <script>
+        let sidebarOpen = true;
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function toggleDesktopSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const main = document.getElementById('mainContent');
+            const texts = document.querySelectorAll('.sidebar-text');
+
+            sidebarOpen = !sidebarOpen;
+
+            if (!sidebarOpen) {
+                // COLLAPSE
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-20');
+
+                main.classList.remove('md:ml-64');
+                main.classList.add('md:ml-20');
+
+                texts.forEach(t => t.classList.add('hidden'));
+
+            } else {
+                // EXPAND
+                sidebar.classList.remove('w-20');
+                sidebar.classList.add('w-64');
+
+                main.classList.remove('md:ml-20');
+                main.classList.add('md:ml-64');
+
+                texts.forEach(t => t.classList.remove('hidden'));
+            }
+        }
+    </script>
 
 </body>
 

@@ -21,130 +21,175 @@
             </div>
 
             <a href="{{ route('admin.products.create') }}"
-                class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
+                class="bg-teal-500 text-white  p-3 text-sm  rounded-lg shadow hover:bg-teal-600 transition">
                 + Ajouter Produit
             </a>
         </div>
 
         {{-- TABLE CARD --}}
         <div class="bg-white rounded-xl shadow overflow-hidden">
+            <div class="bg-white p-4 rounded-xl mb-5 flex flex-wrap gap-3 items-center border">
+
+                {{-- SEARCH --}}
+                <div class="relative w-60">
+                    <span class="absolute left-3 top-2.5 text-gray-400 text-sm">🔍</span>
+                    <input type="text" placeholder="Rechercher..."
+                        class="w-full border pl-9 pr-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none">
+                </div>
+
+                {{-- CATEGORY --}}
+                <div class="relative">
+                    <span class="absolute left-3 top-2.5 text-gray-400 text-sm">📂</span>
+                    <select class="border pl-9 pr-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500">
+                        <option>Toutes catégories</option>
+                    </select>
+                </div>
+
+                {{-- STOCK --}}
+                <div class="relative">
+                    <span class="absolute left-3 top-2.5 text-gray-400 text-sm">📦</span>
+                    <select class="border pl-9 pr-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-teal-500">
+                        <option>Tout stock</option>
+                        <option>En stock</option>
+                        <option>Rupture</option>
+                    </select>
+                </div>
+
+                {{-- FILTER BUTTONS --}}
+                <div class="flex gap-2 ml-auto flex-wrap">
+
+                    <button
+                        class="flex items-center gap-1  bg-teal-50 text-teal-700 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-teal-600 hover:text-white transition">
+                        💸 Promo
+                    </button>
+
+                    <button
+                        class="flex items-center gap-1 bg-pink-50 text-pink-600 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-pink-600 hover:text-white transition">
+                        ✨ Nouveau
+                    </button>
+
+                    <button
+                        class="flex items-center gap-1 bg-amber-50 text-amber-600 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-amber-500 hover:text-white transition">
+                        💊 Ordonnance
+                    </button>
+
+                </div>
+
+            </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left">
+                {{-- PRODUCTS GRID --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
 
-                    {{-- HEAD --}}
-                    <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
-                        <tr>
-                            <th class="px-4 py-3">#ID</th>
-                            <th class="px-4 py-3">Produit</th>
-                            <th class="px-4 py-3">Prix</th>
-                            <th class="px-4 py-3">Stock</th>
-                            <th class="px-4 py-3 text-center">Actions</th>
-                        </tr>
-                    </thead>
+                    @forelse($products as $product)
+                        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition">
 
-                    {{-- BODY --}}
-                    <tbody class="divide-y">
+                            {{-- IMAGE --}}
+                            <div class="relative bg-gray-50 h-40 flex items-center justify-center p-4">
 
-                        @forelse($products as $product)
-                            {{-- Replace your card grid section with this --}}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                                @forelse($products as $product)
+                                @if ($product->discount > 0)
+                                    <span class="absolute top-2 left-2 bg-pink-600 text-white text-xs px-2 py-1 rounded">
+                                        -{{ $product->discount }}%
+                                    </span>
+                                @endif
+
+                                @if ($product->isNew)
+                                    <span class="absolute top-2 right-10 bg-teal-500 text-white text-xs px-2 py-1 rounded">
+                                        Nouveau
+                                    </span>
+                                @endif
+
+                                <button class="absolute top-2 right-2 bg-white border rounded-full w-7 h-7 text-pink-500">
+                                    ♡
+                                </button>
+
+                                @if ($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="max-h-28 object-contain">
+                                @else
                                     <div
-                                        class="bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200">
-
-                                        {{-- Image zone --}}
-                                        <div class="relative bg-gray-50 flex items-center justify-center h-40 p-4">
-                                            @if ($product->discount > 0)
-                                                <span
-                                                    class="absolute top-2 left-2 bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded-lg">
-                                                    -{{ $product->discount }}%
-                                                </span>
-                                            @endif
-                                            @if ($product->isNew)
-                                                <span
-                                                    class="absolute top-2 right-9 bg-teal-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
-                                                    Nouveau
-                                                </span>
-                                            @endif
-                                            <button
-                                                class="absolute top-2 right-2 w-7 h-7 bg-white border border-gray-200 rounded-full flex items-center justify-center text-pink-500 hover:bg-pink-50 transition">♡</button>
-
-                                            @if ($product->image)
-                                                <img src="{{ asset('storage/' . $product->image) }}"
-                                                    class="max-h-28 max-w-full object-contain">
-                                            @else
-                                                <div
-                                                    class="w-16 h-16 rounded-full bg-teal-500 text-white font-bold text-2xl flex items-center justify-center">
-                                                    {{ strtoupper(substr($product->name, 0, 2)) }}
-                                                </div>
-                                            @endif
-                                        </div>
-
-                                        {{-- Body --}}
-                                        <div class="p-3 flex flex-col gap-1 flex-1">
-                                            <span
-                                                class="text-xs bg-gray-100 text-gray-400 rounded px-1.5 py-0.5 self-start">#{{ str_pad($product->id, 5, '0', STR_PAD_LEFT) }}</span>
-                                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                                                {{ $product->brand }}</p>
-                                            <p class="text-sm font-extrabold text-gray-800 leading-tight">
-                                                {{ $product->name }}</p>
-                                            <div class="flex items-baseline gap-2 mt-1">
-                                                @if ($product->price_old)
-                                                    <span
-                                                        class="text-xs text-gray-400 line-through">{{ $product->price_old }}
-                                                        TND</span>
-                                                @endif
-                                                <span class="text-base font-extrabold text-teal-700">{{ $product->price }}
-                                                    TND</span>
-                                            </div>
-                                            <div class="flex items-center justify-between mt-1">
-                                                @if ($product->stock > 0)
-                                                    <span
-                                                        class="text-xs font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">En
-                                                        stock ({{ $product->stock }})</span>
-                                                @else
-                                                    <span
-                                                        class="text-xs font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded-full">Rupture</span>
-                                                @endif
-                                                @if ($product->requiresPrescription)
-                                                    <span
-                                                        class="text-xs font-bold bg-amber-50 text-amber-600 px-2 py-0.5 rounded">Rx</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        {{-- Actions --}}
-                                        <div class="flex gap-2 p-3 border-t border-gray-50">
-                                            <a href="{{ route('admin.products.show', $product->id) }}"
-                                                class="flex-1 text-center text-xs font-bold bg-teal-50 text-teal-700 hover:bg-teal-500 hover:text-white py-2 rounded-lg transition">👁
-                                                Voir</a>
-                                            <a href="{{ route('admin.products.edit', $product->id) }}"
-                                                class="text-xs bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-lg transition">✏️</a>
-                                            <form action="{{ route('admin.products.destroy', $product->id) }}"
-                                                method="POST" onsubmit="return confirm('Supprimer ce produit ?')">
-                                                @csrf @method('DELETE')
-                                                <button
-                                                    class="text-xs bg-red-50 text-red-500 hover:bg-red-500 hover:text-white px-3 py-2 rounded-lg transition">🗑</button>
-                                            </form>
-                                        </div>
+                                        class="w-16 h-16 bg-teal-500 text-white flex items-center justify-center rounded-full text-xl font-bold">
+                                        {{ strtoupper(substr($product->name, 0, 2)) }}
                                     </div>
-                                @empty
-                                    <div class="col-span-full text-center py-16 text-gray-400">Aucun produit trouvé</div>
-                                @endforelse
+                                @endif
                             </div>
 
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-10 text-gray-400">
-                                    Aucun produit trouvé
-                                </td>
-                            </tr>
-                        @endforelse
+                            {{-- BODY --}}
+                            <div class="p-3 flex flex-col gap-1">
 
-                    </tbody>
+                                <span class="text-xs bg-gray-100 px-2 py-0.5 rounded w-fit">
+                                    #{{ str_pad($product->id, 5, '0', STR_PAD_LEFT) }}
+                                </span>
 
-                </table>
+                                <p class="text-xs text-gray-400 uppercase">{{ $product->brand }}</p>
+
+                                <h3 class="text-sm font-bold text-gray-800">
+                                    {{ $product->name }}
+                                </h3>
+
+                                {{-- PRICE --}}
+                                <div class="flex gap-2 items-center">
+                                    @if ($product->price_old)
+                                        <span class="text-xs line-through text-gray-400">
+                                            {{ $product->price_old }} TND
+                                        </span>
+                                    @endif
+
+                                    <span class="text-teal-700 font-bold">
+                                        {{ $product->price }} TND
+                                    </span>
+                                </div>
+
+                                {{-- STOCK --}}
+                                <div class="flex justify-between items-center mt-1">
+                                    @if ($product->stock > 0)
+                                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                                            En stock ({{ $product->stock }})
+                                        </span>
+                                    @else
+                                        <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
+                                            Rupture
+                                        </span>
+                                    @endif
+
+                                    @if ($product->requiresPrescription)
+                                        <span class="text-xs bg-amber-50 text-amber-600 px-2 py-1 rounded">
+                                            Rx
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- ACTIONS --}}
+                            <div class="flex gap-2 p-3 border-t">
+
+                                <a href="{{ route('admin.products.show', $product->id) }}"
+                                    class="flex-1 text-center text-xs bg-teal-50 text-teal-700 py-2 rounded hover:bg-teal-600 hover:text-white">
+                                    👁 Voir
+                                </a>
+
+                                <a href="{{ route('admin.products.edit', $product->id) }}"
+                                    class="bg-blue-50 text-blue-600 px-3 py-2 rounded hover:bg-blue-600 hover:text-white">
+                                    ✏️
+                                </a>
+
+                                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST">
+                                    @csrf @method('DELETE')
+                                    <button
+                                        class="bg-red-50 text-red-500 px-3 py-2 rounded hover:bg-red-500 hover:text-white">
+                                        🗑
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    @empty
+                        <div class="col-span-full text-center text-gray-400 py-10">
+                            Aucun produit trouvé
+                        </div>
+                    @endforelse
+
+                </div>
             </div>
 
             {{-- PAGINATION --}}

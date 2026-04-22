@@ -12,8 +12,12 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->latest()->get();
-        return view('admin.products.index', compact('products'));
+        // $products = Product::with('category')->latest()->get();
+        // return view('admin.products.index', compact('products'));
+        $products = Product::latest()->paginate(12);
+        $categories = Category::all();
+
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function create()
@@ -59,6 +63,12 @@ class ProductController extends Controller
         $categories = Category::all();
 
         return view('admin.products.edit', compact('product', 'categories'));
+        if ($request->remove_image == "1") {
+            if ($product->image) {
+                Storage::delete('public/' . $product->image);
+                $product->image = null;
+            }
+        }
     }
 
     public function update(Request $request, $id)
@@ -97,6 +107,12 @@ class ProductController extends Controller
         $product->update($data);
 
         return redirect()->route('admin.products.index');
+        if ($request->remove_image == "1") {
+            if ($product->image) {
+                Storage::delete('public/' . $product->image);
+                $product->image = null;
+            }
+        }
     }
 
     public function destroy($id)

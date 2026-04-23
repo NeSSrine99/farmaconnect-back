@@ -26,12 +26,22 @@ Route::prefix('admin')->group(function () {
 
     Route::get('orders', [OrderController::class, 'index'])->name('admin.orders');
     Route::get('orders/{id}', [OrderController::class, 'show'])->name('admin.orders.show');
-    Route::get('orders/{id}/{status}', [OrderController::class, 'updateStatus']);
+    Route::post('orders/{id}/status', [OrderController::class, 'updateStatus'])
+        ->name('admin.orders.updateStatus');
+    // AJAX
+    Route::get('orders/{id}/items', [OrderController::class, 'items'])
+        ->name('admin.orders.items');
 
     Route::get('prescriptions', [PrescriptionController::class, 'index'])->name('admin.prescriptions');
-    Route::get('prescriptions/{id}/{status}', [PrescriptionController::class, 'updateStatus']);
+    Route::post('prescriptions/{id}/status', [PrescriptionController::class, 'updateStatus'])
+        ->name('admin.prescriptions.updateStatus');
     Route::resource('users', UserController::class)->names('admin.users');
-    
+    Route::get('prescriptions/{id}/create-order', [PrescriptionController::class, 'createOrder'])
+        ->name('admin.prescriptions.createOrder');
+
+    Route::post('prescriptions/{id}/store-order', [PrescriptionController::class, 'storeOrder'])
+        ->name('admin.prescriptions.storeOrder');
+    Route::get('prescriptions/count', [PrescriptionController::class, 'count']);
 });
 
 

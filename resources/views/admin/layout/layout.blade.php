@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Farmaconnect Admin</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,18 +20,39 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: #f1f5f9; }
+        * {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        body {
+            background: #f1f5f9;
+        }
 
-        .sidebar-link { transition: all 0.2s ease; }
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .sidebar-link {
+            transition: all 0.2s ease;
+        }
 
         @media (max-width: 768px) {
-            #sidebar { transform: translateX(-100%); }
-            #sidebar.open { transform: translateX(0); }
+            #sidebar {
+                transform: translateX(-100%);
+            }
+
+            #sidebar.open {
+                transform: translateX(0);
+            }
         }
     </style>
 </head>

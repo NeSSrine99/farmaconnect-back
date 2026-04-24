@@ -28,6 +28,7 @@
                             <th class="px-6 py-4">Payment</th>
                             <th class="px-6 py-4">Status</th>
                             <th class="px-6 py-4">Total</th>
+                            <th class="px-6 py-4 text-center">Prescription</th> <!-- NEW -->
                             <th class="px-6 py-4 text-center">Items</th>
                             <th class="px-6 py-4 text-center">Update</th>
                             <th class="px-6 py-4 text-center">Action</th>
@@ -36,6 +37,12 @@
 
                     <tbody>
                         @forelse ($orders as $order)
+                            @php
+                                $hasPrescription = $order->items->contains(function ($item) {
+                                    return optional($item->product)->requiresPrescription;
+                                });
+                            @endphp
+
                             <!-- Main Row -->
                             <tr class="border-b hover:bg-gray-50 transition">
 
@@ -94,6 +101,19 @@
                                     ${{ number_format($order->total_price, 2) }}
                                 </td>
 
+                                <!-- Prescription (NEW) -->
+                                <td class="px-6 py-4 text-center">
+                                    @if ($hasPrescription)
+                                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs">
+                                            Required
+                                        </span>
+                                    @else
+                                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">
+                                            Not Required
+                                        </span>
+                                    @endif
+                                </td>
+
                                 <!-- Toggle Items -->
                                 <td class="px-6 py-4 text-center">
                                     <button onclick="loadItems({{ $order->id }})"
@@ -137,7 +157,7 @@
 
                             <!-- AJAX Expand Row -->
                             <tr id="items-{{ $order->id }}" class="hidden bg-gray-50">
-                                <td colspan="9" class="p-4">
+                                <td colspan="10" class="p-4">
                                     <div id="items-content-{{ $order->id }}">
                                         Loading...
                                     </div>
@@ -146,7 +166,7 @@
 
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center py-6 text-gray-500">
+                                    <td colspan="10" class="text-center py-6 text-gray-500">
                                         No orders found
                                     </td>
                                 </tr>
@@ -194,33 +214,27 @@
                              class="w-14 h-14 object-cover rounded">
 
                         <div class="text-sm w-full">
-                            <p class="font-semibold">
-                                ${item.product.name}
-                            </p>
+                            <p class="font-semibold">${item.product.name}</p>
 
-                            <p class="text-gray-500 text-xs">
-                                Qty: ${item.quantity}
-                            </p>
+                            <p class="text-gray-500 text-xs">Qty: ${item.quantity}</p>
 
-                            <p class="text-gray-500 text-xs">
-                                Price: $${item.price}
-                            </p>
+                            <p class="text-gray-500 text-xs">Price: $${item.price}</p>
 
                             <p class="text-green-600 font-semibold text-xs">
                                 Total: $${total}
                             </p>
 
                             <p class="text-xs ${
-                                item.product.requires_prescription
-                                    ? 'text-red-600'
-                                    : 'text-green-600'
-                            }">
-                                ${
-                                    item.product.requires_prescription
-                                        ? 'Prescription Required'
-                                        : 'No Prescription'
-                                }
-                            </p>
+    item.product.requiresPrescription
+        ? 'text-red-600'
+        : 'text-green-600'
+}">
+    ${
+        item.product.requiresPrescription
+            ? 'Prescription Required'
+            : 'No Prescription'
+    }
+</p>
                         </div>
 
                     </div>

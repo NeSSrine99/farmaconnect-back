@@ -1,5 +1,3 @@
-
-
 <aside id="sidebar"
     class="fixed top-0 left-0 h-screen w-64 bg-white shadow-xl z-50 flex flex-col transition-all duration-300 transform -translate-x-full md:translate-x-0"
     style="font-family: 'Plus Jakarta Sans', sans-serif;">
@@ -56,8 +54,9 @@
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
             <span class="sidebar-text">Orders</span>
-            @if(isset($pendingOrders) && $pendingOrders > 0)
-                <span class="sidebar-text ml-auto bg-red-100 text-red-500 text-xs font-semibold px-2 py-0.5 rounded-full">{{ $pendingOrders }}</span>
+            @if (isset($pendingOrders) && $pendingOrders > 0)
+                <span
+                    class="sidebar-text ml-auto bg-red-100 text-red-500 text-xs font-semibold px-2 py-0.5 rounded-full">{{ $pendingOrders }}</span>
             @endif
         </a>
 
@@ -71,7 +70,38 @@
             <span class="sidebar-text">Prescriptions</span>
         </a>
 
-        <p class="sidebar-text text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3 mt-5 px-2">Settings</p>
+
+        <a href="{{ route('admin.consultations') }}"
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 font-medium text-sm transition-all duration-200
+    {{ request()->routeIs('admin.consultations*') ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md shadow-cyan-200' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800' }}">
+
+            <!-- 💬 NEW CHAT ICON -->
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 8h10M7 12h6m-6 4h4m10-4c0 4-4 7-9 7a9 9 0 01-4-.8L3 20l1.5-3A7 7 0 013 12c0-4 4-7 9-7s9 3 9 7z" />
+            </svg>
+
+            <span class="sidebar-text">Consultations</span>
+
+        </a>
+
+
+        <a href="{{ route('admin.subscriptions') }}"
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 font-medium text-sm transition-all duration-200
+    {{ request()->routeIs('admin.subscriptions*') ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md shadow-cyan-200' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800' }}">
+
+            <!-- 💬 NEW CHAT ICON -->
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v6h6M20 20v-6h-6M5.64 18.36A9 9 0 1018.36 5.64L20 8M4 16l1.64 2.36" />
+            </svg>
+
+            <span class="sidebar-text">Subscriptions</span>
+
+        </a>
+
+        <p class="sidebar-text text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3 mt-5 px-2">Settings
+        </p>
 
         <a href="{{ route('admin.users.index') }}"
             class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 font-medium text-sm transition-all duration-200
@@ -83,12 +113,26 @@
             <span class="sidebar-text">Users</span>
         </a>
 
+        <a href="{{ route('admin.team') }}"
+            class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 font-medium text-sm transition
+    {{ request()->routeIs('admin.team') ? 'bg-gradient-to-r from-cyan-500 to-blue-500  text-white' : 'text-gray-500 hover:bg-gray-50' }}">
+
+            {{-- ICON (users group) --}}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5-2.83M9 20H4v-2a3 3 0 015-2.83M12 12a4 4 0 100-8 4 4 0 000 8zM17 12a4 4 0 100-8 4 4 0 000 8zM7 12a4 4 0 100-8 4 4 0 000 8z" />
+            </svg>
+
+            <span class="sidebar-text">Team</span>
+        </a>
+
         <a href="#"
             class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 font-medium text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-all duration-200">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             <span class="sidebar-text">Settings</span>
         </a>
@@ -106,7 +150,7 @@
 
     {{-- LOGOUT --}}
     <div class="px-4 py-4 border-t border-gray-100">
-        <form method="POST" >
+        <form method="POST">
             @csrf
             <button type="submit"
                 class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm text-red-400 hover:bg-red-50 hover:text-red-600 transition-all duration-200">

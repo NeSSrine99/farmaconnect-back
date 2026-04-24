@@ -1,8 +1,5 @@
 <?php
 
-
-
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,34 +15,31 @@ class Product extends Model
         'category_id',
         'availability',
         'isNew',
-        'requiresPrescription',
+        'requiresPrescription', // ✅ keep as is (your DB column)
         'description',
         'image'
     ];
 
     protected $casts = [
         'images' => 'array',
+        'requiresPrescription' => 'boolean', // ✅ IMPORTANT FIX
     ];
 
-    // Category
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    // Order Items
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    // Favorites ❤️
     public function favoritedBy()
     {
         return $this->belongsToMany(User::class, 'favorites');
     }
 
-    // Subscriptions
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);

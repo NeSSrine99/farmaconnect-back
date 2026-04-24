@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\ConsultationController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PrescriptionController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\OrderController as ApiOrderController;
@@ -42,6 +44,19 @@ Route::prefix('admin')->group(function () {
     Route::post('prescriptions/{id}/store-order', [PrescriptionController::class, 'storeOrder'])
         ->name('admin.prescriptions.storeOrder');
     Route::get('prescriptions/count', [PrescriptionController::class, 'count']);
+
+
+    Route::get('/consultations', [ConsultationController::class, 'index'])->name('admin.consultations');
+    Route::get('/consultations/{id}', [ConsultationController::class, 'show'])->name('admin.consultations.show');
+    Route::post('/consultations/{id}/reply', [ConsultationController::class, 'reply'])->name('admin.consultations.reply');
+    Route::delete('/consultations/{id}', [ConsultationController::class, 'destroy'])->name('admin.consultations.destroy');
+
+
+    Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('admin.subscriptions');
+    Route::get('/subscriptions/{id}', [SubscriptionController::class, 'show'])->name('admin.subscriptions.show');
+    Route::delete('/subscriptions/{id}', [SubscriptionController::class, 'destroy'])->name('admin.subscriptions.destroy');
+
+    Route::get('/admin/team', [UserController::class, 'team'])->name('admin.team');
 });
 
 

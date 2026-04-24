@@ -13,8 +13,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with('user') // only user (lightweight)
-            ->withCount('items')      // number of products
+        $orders = Order::with(['user', 'items.product']) // ✅ FIX
             ->latest()
             ->paginate(10);
 

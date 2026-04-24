@@ -1,42 +1,69 @@
 @extends('admin.layout.layout')
 
 @section('content')
-    <div style="font-family: 'Plus Jakarta Sans', sans-serif;">
+    <div class="p-6 bg-gray-50 min-h-screen" style="font-family: 'Plus Jakarta Sans', sans-serif;">
 
         {{-- HEADER --}}
-        <div class="flex items-center justify-between mb-6 ">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">Users</h1>
-                <p class="text-sm text-gray-400 mt-0.5">Manage all registered users</p>
+                <h1 class="text-3xl font-bold text-gray-800">Users</h1>
+                <p class="text-sm text-gray-400 mt-1">Manage all registered users</p>
             </div>
 
             <a href="{{ route('admin.users.create') }}"
-                class="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition">
+                class="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-5 py-2.5 rounded-xl shadow hover:shadow-lg transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 Add User
             </a>
+
         </div>
 
-        {{-- SEARCH + FILTER --}}
-        <div
-            class="bg-white rounded-2xl shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+        {{-- STATS --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                <p class="text-gray-400 text-sm">Total Users</p>
+                <h2 class="text-2xl font-bold text-gray-800 mt-1">
+                    {{ $users->total() }}
+                </h2>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                <p class="text-gray-400 text-sm">Admins</p>
+                <h2 class="text-2xl font-bold text-purple-600 mt-1">
+                    {{ $users->where('role.name', 'admin')->count() }}
+                </h2>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                <p class="text-gray-400 text-sm">Pharmacists</p>
+                <h2 class="text-2xl font-bold text-green-600 mt-1">
+                    {{ $users->where('role.name', 'pharmacist')->count() }}
+                </h2>
+            </div>
+
+        </div>
+
+        {{-- SEARCH --}}
+        <div class="bg-white rounded-2xl shadow-sm p-4 mb-6 flex items-center justify-between">
 
             <div class="relative w-full md:w-96">
-                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none"
+                <input type="text" placeholder="Search users..."
+                    class="w-full pl-4 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-cyan-300 focus:outline-none">
+
+                <svg class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-
-                <input type="text" placeholder="Search users..."
-                    class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-cyan-300 focus:outline-none" />
             </div>
 
-            <div class="text-sm text-gray-400">
-                Total: <span class="font-semibold text-gray-700">{{ $users->count() ?? 0 }}</span>
-            </div>
+            <span class="text-sm text-gray-400 hidden md:block">
+                Showing {{ $users->count() }} of {{ $users->total() }}
+            </span>
 
         </div>
 
@@ -47,7 +74,7 @@
                 <table class="w-full text-sm">
 
                     <thead>
-                        <tr class="text-xs uppercase text-gray-400 border-b border-gray-100 bg-gray-50">
+                        <tr class="text-xs uppercase text-gray-400 bg-gray-50 border-b">
                             <th class="py-3 px-4 text-left">User</th>
                             <th class="py-3 px-4 text-left">Email</th>
                             <th class="py-3 px-4 text-left">Role</th>
@@ -56,7 +83,7 @@
                         </tr>
                     </thead>
 
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y">
 
                         @forelse($users as $user)
                             <tr class="hover:bg-gray-50 transition">
@@ -64,15 +91,21 @@
                                 {{-- USER --}}
                                 <td class="py-4 px-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold"
+
+                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow"
                                             style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
                                             {{ strtoupper(substr($user->name, 0, 1)) }}
                                         </div>
 
                                         <div>
-                                            <p class="font-semibold text-gray-800">{{ $user->name }}</p>
-                                            <p class="text-xs text-gray-400">ID: {{ $user->id }}</p>
+                                            <p class="font-semibold text-gray-800">
+                                                {{ $user->name }}
+                                            </p>
+                                            <p class="text-xs text-gray-400">
+                                                ID: {{ $user->id }}
+                                            </p>
                                         </div>
+
                                     </div>
                                 </td>
 
@@ -83,49 +116,47 @@
 
                                 {{-- ROLE --}}
                                 <td class="py-4 px-4">
-                                    @if ($user->role === 'admin')
-                                        <span
-                                            class="text-xs font-semibold px-2 py-1 rounded-full bg-purple-50 text-purple-600">
-                                            Admin
-                                        </span>
-                                    @else
-                                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-cyan-50 text-cyan-600">
-                                            User
-                                        </span>
-                                    @endif
+                                    @php
+                                        $role = strtolower($user->role->name ?? 'user');
+                                    @endphp
+
+                                    <span
+                                        class="px-3 py-1 text-xs font-semibold rounded-full
+                                    @if ($role === 'admin') bg-purple-100 text-purple-700
+                                    @elseif($role === 'pharmacist') bg-green-100 text-green-700
+                                    @else bg-cyan-100 text-cyan-700 @endif
+                                ">
+                                        {{ ucfirst($role) }}
+                                    </span>
                                 </td>
 
                                 {{-- DATE --}}
-                                <td class="py-4 px-4 text-gray-500 text-sm">
+                                <td class="py-4 px-4 text-gray-500">
                                     {{ $user->created_at->format('d M Y') }}
                                 </td>
 
                                 {{-- ACTIONS --}}
                                 <td class="py-4 px-4">
-                                    <div class="flex items-center justify-end gap-2">
+                                    <div class="flex justify-end gap-2">
 
-                                        {{-- EDIT --}}
-                                        <a href="{{ route('admin.users.edit', $user->id) }}"
-                                            class="p-2 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11 5h2m-1 0v14m-7-7h14" />
-                                            </svg>
+                                        <a href="{{ route('admin.users.show', $user->id) }}"
+                                            class="px-3 py-1 text-xs bg-gray-100 rounded-lg hover:bg-gray-200">
+                                            View
                                         </a>
 
-                                        {{-- DELETE --}}
+                                        <a href="{{ route('admin.users.edit', $user->id) }}"
+                                            class="px-3 py-1 text-xs bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200">
+                                            Edit
+                                        </a>
+
                                         <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
                                             onsubmit="return confirm('Delete this user?')">
                                             @csrf
                                             @method('DELETE')
 
                                             <button
-                                                class="p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
+                                                class="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                                                Delete
                                             </button>
                                         </form>
 
@@ -134,7 +165,6 @@
 
                             </tr>
                         @empty
-
                             <tr>
                                 <td colspan="5" class="text-center py-10 text-gray-400">
                                     No users found
@@ -145,6 +175,11 @@
                     </tbody>
 
                 </table>
+            </div>
+
+            {{-- PAGINATION --}}
+            <div class="p-4 border-t">
+                {{ $users->links() }}
             </div>
 
         </div>

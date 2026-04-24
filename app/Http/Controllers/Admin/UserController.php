@@ -9,20 +9,57 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-
-    public function index()
+    // LIST USERS
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(10);
-        return view('admin.users.index', compact('users'));
+        $query = User::with('role');
+
+        // 🔍 SEARCH
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                    ->orWhere('email', 'like', "%{$request->search}%");
+            });
+        }
+
+        // 🎯 ROLE FILTER
+        if ($request->role_id) {
+            $query->where('role_id', $request->role_id);
+        }
+
+        $users = $query->latest()->paginate(10);
+
+        // 📊 CHART DATA
+        $chart = User::selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        $roles = Role::all();
+
+        return view('admin.users.index', compact('users', 'chart', 'roles'));
     }
 
+    public function team()
+    {
+        $pharmaciens = User::with('role')
+            ->whereHas('role', function ($q) {
+                $q->where('name', 'pharmacien');
+            })
+            ->latest()
+            ->paginate(12);
 
+        return view('admin.team.index', compact('pharmaciens'));
+    }
+
+    // CREATE PAGE
     public function create()
     {
-        return view('admin.users.create');
+        $roles = Role::all(); // ✅ FIX (you forgot this)
+        return view('admin.users.create', compact('roles'));
     }
 
-
+    // STORE USER
     public function store(Request $request)
     {
         $request->validate([
@@ -42,14 +79,14 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'User created');
     }
 
-
+    // SHOW USER
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('role')->findOrFail($id); // ✅ FIX
         return view('admin.users.show', compact('user'));
     }
 
-    // edit user
+    // EDIT USER
     public function edit($id)
     {
         $user = User::findOrFail($id);
@@ -58,7 +95,7 @@ class UserController extends Controller
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
-    // update user
+    // UPDATE USER
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -71,12 +108,17 @@ class UserController extends Controller
 
         $data = $request->only('name', 'email', 'role_id');
 
+        // ✅ FIX: password optional
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
         $user->update($data);
 
         return redirect()->route('admin.users.index')->with('success', 'User updated');
     }
 
-    // delete user
+    // DELETE USER
     public function destroy($id)
     {
         User::findOrFail($id)->delete();

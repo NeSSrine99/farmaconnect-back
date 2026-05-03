@@ -92,11 +92,20 @@
                                 <td class="py-4 px-4">
                                     <div class="flex items-center gap-3">
 
-                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow"
-                                            style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
-                                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                                        {{-- PHOTO OR INITIAL --}}
+                                        <div class="w-10 h-10">
+                                            @if ($user->photo)
+                                                <img src="{{ asset('storage/' . $user->photo) }}"
+                                                    class="w-10 h-10 rounded-full object-cover shadow hover:scale-105 transition">
+                                            @else
+                                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow"
+                                                    style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
+                                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                                </div>
+                                            @endif
                                         </div>
 
+                                        {{-- NAME --}}
                                         <div>
                                             <p class="font-semibold text-gray-800">
                                                 {{ $user->name }}

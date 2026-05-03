@@ -19,9 +19,16 @@
 
                     {{-- AVATAR --}}
                     <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow"
-                            style="background: linear-gradient(135deg, #10b981, #059669);">
-                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                        <div class="w-12 h-12">
+                            @if ($user->photo)
+                                <img src="{{ asset('storage/' . $user->photo) }}"
+                                    class="w-12 h-12 rounded-full object-cover shadow hover:scale-105 transition">
+                            @else
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg shadow"
+                                    style="background: linear-gradient(135deg, #10b981, #059669);">
+                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                </div>
+                            @endif
                         </div>
 
                         <div>

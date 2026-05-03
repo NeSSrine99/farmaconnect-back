@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -67,14 +68,22 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'role_id' => 'required|exists:roles,id',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        User::create([
+        $data = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'role_id' => $request->role_id,
-        ]);
+        ];
+
+        // ✅ upload photo
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('users', 'public');
+        }
+
+        User::create($data);
 
         return redirect()->route('admin.users.index')->with('success', 'User created');
     }
@@ -104,13 +113,25 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => "required|email|unique:users,email,$id",
             'role_id' => 'required|exists:roles,id',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = $request->only('name', 'email', 'role_id');
 
-        // ✅ FIX: password optional
+        // password optional
         if ($request->filled('password')) {
             $data['password'] = bcrypt($request->password);
+        }
+
+        // ✅ update photo
+        if ($request->hasFile('photo')) {
+
+            // delete old image
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
+            }
+
+            $data['photo'] = $request->file('photo')->store('users', 'public');
         }
 
         $user->update($data);

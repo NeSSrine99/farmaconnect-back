@@ -5,12 +5,14 @@
 
         <h1 class="text-2xl font-bold mb-4">Create User</h1>
 
-        <form method="POST" action="{{ route('admin.users.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('admin.users.store') }}" enctype="multipart/form-data" class="space-y-4">
             @csrf
 
             <input type="text" name="name" placeholder="Name" class="w-full border p-2 rounded" required>
             <input type="email" name="email" placeholder="Email" class="w-full border p-2 rounded" required>
             <input type="password" name="password" placeholder="Password" class="w-full border p-2 rounded" required>
+
+            <input type="file" name="photo" class="w-full border p-2 rounded">
 
             {{-- ROLE --}}
             <select name="role_id" class="w-full border p-2 rounded">
